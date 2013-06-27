@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwaggerDriver", "Driver\SwaggerDriver.csproj", "{981189D9-3E97-4BBA-B8FE-DAA2D605806B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{BCA63DD8-62F0-4734-9886-41C45E06DE83}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{981189D9-3E97-4BBA-B8FE-DAA2D605806B}.Release|x86.ActiveCfg = Release|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BCA63DD8-62F0-4734-9886-41C45E06DE83}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
