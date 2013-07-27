@@ -14,6 +14,6 @@ rem       @"LINQPad\Drivers\DataContext\4.0\")
 rem
 rem  The final part of the directory is the name of the assembly plus its public key token in brackets.
 
-xcopy /i/y header.xml "c:\ProgramData\LINQPad\Drivers\DataContext\4.0\SwaggerDriver (a2ca9cc4ad783add)\"
-xcopy /i/y SoapContextDriver.dll "c:\ProgramData\LINQPad\Drivers\DataContext\4.0\SwaggerDriver (a2ca9cc4ad783add)\"
-xcopy /i/y SoapContextDriver.pdb "c:\ProgramData\LINQPad\Drivers\DataContext\4.0\SwaggerDriver (a2ca9cc4ad783add)\"
+xcopy /i/y header.xml "c:\ProgramData\LINQPad\Drivers\DataContext\4.0\SwaggerDriver (5e17f102fb3806a3)\"
+xcopy /i/y *.dll "c:\ProgramData\LINQPad\Drivers\DataContext\4.0\SwaggerDriver (5e17f102fb3806a3)\"
+xcopy /i/y *.pdb "c:\ProgramData\LINQPad\Drivers\DataContext\4.0\SwaggerDriver (5e17f102fb3806a3)\"

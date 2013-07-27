@@ -4,14 +4,14 @@ using System.Runtime.Serialization;
 namespace SwaggerDriver.Swagger
 {
     [DataContract]
-    public class ServiceDeclaration : SwaggerDeclaration
+    public class ApiDeclaration : SwaggerDeclaration
     {
-        [DataMember]
-        public List<ApiReference> Apis { get; set; }
+        [DataMember(Name = "apis")]
+        public List<ResourceReference> Resources { get; set; }
     }
 
     [DataContract]
-    public class ApiReference
+    public class ResourceReference
     {
         [DataMember(Name = "path")]
         public string Path { get; set; }
@@ -20,15 +20,17 @@ namespace SwaggerDriver.Swagger
         public string Description { get; set; }
     }
 
-    public class ApiDeclaration : SwaggerDeclaration
+    [DataContract]
+    public class ResourceDeclaration : SwaggerDeclaration
     {
         [DataMember(Name = "resourcePath")]
         public string Path { get; set; }
 
-        [DataMember]
-        public List<Api> Apis { get; set; }
+        [DataMember(Name = "apis")]
+        public List<Resource> Resources { get; set; }
     }
 
+    [DataContract]
     public class SwaggerDeclaration
     {
         [DataMember(Name = "apiVersion")]

@@ -1,40 +1,66 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
-using System.Runtime.Serialization;
-using RestSharp;
+using System.Net.Http;
+using Newtonsoft.Json;
 using SwaggerDriver.Swagger;
 
 namespace SwaggerDriver
 {
-    public class Service
-    {
-        public string Uri { get; set; }
-        public IEnumerable<Api> Apis { get; set; }
-    }
-
     public class Discovery
     {
-        readonly string uri;
+        readonly string url;
         readonly ICredentials credentials;
-        ServiceDeclaration serviceDeclaration;
+        ApiDeclaration apiDeclaration;
+        IEnumerable<ResourceDeclaration> resourceDeclarations;
 
-        public Discovery(string uri, ICredentials credentials)
+        public Discovery(string url, ICredentials credentials)
         {
-            this.uri = uri;
-            this.credentials = credentials;
+            this.url = url;
+            this.credentials = credentials ?? CredentialCache.DefaultCredentials;
         }
 
-        public ServiceDeclaration GetDeclaration()
+        public ApiDeclaration GetApi()
         {
-            return serviceDeclaration ?? (serviceDeclaration = DiscoverService());
+            return apiDeclaration ?? (apiDeclaration = FetchApi());
         }
 
-        ServiceDeclaration DiscoverService()
+        public IEnumerable<ResourceDeclaration> GetResources()
         {
-            var client = new RestClient(uri);
-            var request = new RestRequest(Method.GET);
-            var response = client.Execute<ServiceDeclaration>(request);
-            return response.Data;
+            return resourceDeclarations ?? (resourceDeclarations = FetchResources());
+        }
+
+        ApiDeclaration FetchApi()
+        {
+            var client = new HttpClient();
+            var response = client.GetAsync(url).Result;
+            response.EnsureSuccessStatusCode();
+
+            var declaration = JsonConvert.DeserializeObject<ApiDeclaration>(
+                response.Content.ReadAsStringAsync().Result);
+
+            return declaration;
+        }
+
+        IEnumerable<ResourceDeclaration> FetchResources()
+        {
+            var results = new List<ResourceDeclaration>();
+            var api = GetApi();
+            foreach (var resourceReference in api.Resources)
+                results.Add(FetchResource(api.BasePath ?? url, resourceReference));
+            return results;
+        }
+
+        ResourceDeclaration FetchResource(string apiPath, ResourceReference reference)
+        {
+            var client = new HttpClient();
+            var response = client.GetAsync(apiPath + reference.Path).Result;
+            response.EnsureSuccessStatusCode();
+
+            var declaration = JsonConvert.DeserializeObject<ResourceDeclaration>(
+                response.Content.ReadAsStringAsync().Result);
+
+            return declaration;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace SwaggerDriver
 {
     public class DiscoveryCompleteEventArgs : EventArgs
     {
-        public DiscoveryReference Reference { get; set; }
+        public ProxyReference Reference { get; set; }
     }
 
     public class DiscoveryFailureEventArgs : EventArgs
@@ -18,7 +18,7 @@ namespace SwaggerDriver
     {
         class DiscoveryResult
         {
-            public DiscoveryReference Reference { get; set; }
+            public ProxyReference Reference { get; set; }
             public string FailureReason { get; set; }
         }
 
@@ -59,23 +59,22 @@ namespace SwaggerDriver
 
         static void OnDoWork(object sender, DoWorkEventArgs args)
         {
-            throw new NotImplementedException();
-            //var discovery = args.Argument as Discovery;
-            //var result = new DiscoveryResult();
-            //args.Result = result;
+            var discovery = args.Argument as Discovery;
+            var result = new DiscoveryResult();
+            args.Result = result;
 
-            //if (discovery != null)
-            //{
-            //    try
-            //    {
-            //        result.Reference = new DiscoveryCompiler(CodeProvider.Default)
-            //            .CompileDiscovery(discovery, "temp", "LINQPad.User");
-            //    }
-            //    catch (InvalidOperationException ioe)
-            //    {
-            //        result.FailureReason = ioe.Message;
-            //    }
-            //}
+            if (discovery != null)
+            {
+                try
+                {
+                    result.Reference = new ProxyCompiler(CodeProvider.Default)
+                        .CompileDiscovery(discovery, "temp");
+                }
+                catch (InvalidOperationException ioe)
+                {
+                    result.FailureReason = ioe.Message;
+                }
+            }
         }
 
         void OnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

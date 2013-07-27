@@ -11,9 +11,6 @@ namespace SwaggerDriver.Swagger
         [DataMember(Name = "summary")]
         public string Summary { get; set; }
 
-        [DataMember(Name = "notes")]
-        public string Notes { get; set; }
-
         [DataMember(Name = "responseClass")]
         public string ResponseClass { get; set; }
 

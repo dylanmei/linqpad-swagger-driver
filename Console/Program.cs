@@ -15,7 +15,7 @@ namespace Console
         static void Main(string[] args)
         {
             discovery = new Discovery(
-                "http://petstore.swagger.wordnik.com/api/api-docs.json", CredentialCache.DefaultCredentials);
+                "http://petstore.swagger.wordnik.com/api/api-docs", CredentialCache.DefaultCredentials);
 
             var assemblyPath = Path.Combine(GetOutputPath(), "output.dll");
             var assemblyName = new AssemblyName {
@@ -28,15 +28,15 @@ namespace Console
             System.Console.ReadKey();
         }
 
-        static Assembly BuildAssembly(AssemblyName assemblyName, string @namespace)
+        static void BuildAssembly(AssemblyName assemblyName, string @namespace)
         {
             var codeProvider = CodeProvider.Default;
 
-            var compileResults = new DiscoveryCompiler(codeProvider)
+            var compileResults = new ProxyCompiler(codeProvider)
                 .CompileDiscovery(discovery, assemblyName, @namespace);
 
             WriteSource(codeProvider, compileResults.CodeDom);
-            return compileResults.CompiledAssembly;
+            //return compileResults.CompiledAssembly;
         }
 
         static void WriteSource(CodeDomProvider codeProvider, CodeCompileUnit compileUnit)

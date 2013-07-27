@@ -33,25 +33,18 @@ namespace SwaggerDriver.Dialogs
 			}
 		}
 
-		void Select_Click(object sender, EventArgs e)
+		void Finish_Click(object sender, EventArgs e)
 		{
-			SetVisiblePage(2);
-		}
+            DialogResult = true;
+        }
 
 		void Back_Click(object sender, EventArgs e)
 		{
 			SetVisiblePage(page - 1);
 		}
 
-		void Finish_Click(object sender, EventArgs e)
-		{
-			// Close window
-			DialogResult = true;
-		}
-
 		void Connect()
 		{
-			SelectButton.IsEnabled = false;
 			RestartButton.IsEnabled = false;
 			Progress.IsIndeterminate = true;
 
@@ -85,7 +78,6 @@ namespace SwaggerDriver.Dialogs
             //else
             //{
 				logger.Write("Click \"Next\" to continue.");
-				SelectButton.IsEnabled = true;
 
             //    var reset = string.IsNullOrEmpty(Model.BindingName) ||
             //        !reference.Bindings.Any(b => b.Name == Model.BindingName);
@@ -105,7 +97,8 @@ namespace SwaggerDriver.Dialogs
 
             //if (!reference.HasErrors && !reference.HasWarnings)
             //{
-				SetVisiblePage(2);
+				//SetVisiblePage(2);
+                FinishButton.IsEnabled = true;
             //}		
 		}
 
@@ -116,11 +109,10 @@ namespace SwaggerDriver.Dialogs
 
 		void SetVisiblePage(int p)
 		{
-			if (p < 0 || p > 2) return;
+			if (p < 0 || p > 1) return;
 			page = p;
 			Page1.Visibility = GetPageVisibility(0);
 			Page2.Visibility = GetPageVisibility(1);
-			Page3.Visibility = GetPageVisibility(2);
 		}
 	}
 }

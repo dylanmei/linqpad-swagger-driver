@@ -33,11 +33,17 @@ namespace SwaggerDriver.Dialogs
 			set { DriverData.SetElementValue ("Uri", value); }
 		}
 
-		public string BindingName
-		{
-			get { return (string) DriverData.Element("Binding") ?? ""; }
-			set { DriverData.SetElementValue ("Binding", value); }
-		}
+        //public string BindingName
+        //{
+        //    get { return ""; }
+        //    set { }
+        //}
+
+//		public string BindingName
+//		{
+//			get { return (string) DriverData.Element("Binding") ?? ""; }
+//			set { DriverData.SetElementValue ("Binding", value); }
+//		}
 
 		public IEnumerable<string> KnownUris
 		{
