@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace SwaggerDriver
 {
-    public class ProxyReference
+    public class DiscoveryResult
     {
         public CodeCompileUnit CodeDom { get; set; }
         public CodeDomProvider CodeProvider { get; set; }

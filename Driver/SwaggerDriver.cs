@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using LINQPad.Extensibility.DataContext;
-using SwaggerDriver.Builders;
 using SwaggerDriver.Dialogs;
 
 namespace SwaggerDriver
@@ -65,7 +64,7 @@ namespace SwaggerDriver
             // swagger service description
             var service = discovery.GetApi();
 
-            new ProxyCompiler(CodeProvider.Default)
+            new DiscoveryCompiler(CodeProvider.Default)
                 .CompileDiscovery(discovery, assemblyToBuild, @namespace);
 
             var explorer = new ExplorerBuilder("Api").Build(service);

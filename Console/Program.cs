@@ -32,7 +32,7 @@ namespace Console
         {
             var codeProvider = CodeProvider.Default;
 
-            var compileResults = new ProxyCompiler(codeProvider)
+            var compileResults = new DiscoveryCompiler(codeProvider)
                 .CompileDiscovery(discovery, assemblyName, @namespace);
 
             WriteSource(codeProvider, compileResults.CodeDom);

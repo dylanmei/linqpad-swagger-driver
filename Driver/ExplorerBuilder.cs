@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LINQPad.Extensibility.DataContext;
 using SwaggerDriver.Swagger;
 
-namespace SwaggerDriver.Builders
+namespace SwaggerDriver
 {
     public class Explorer
     {

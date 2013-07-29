@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using SwaggerDriver.Swagger;
 
-namespace SwaggerDriver.Builders
+namespace SwaggerDriver
 {
     public class CodeBuilder
     {

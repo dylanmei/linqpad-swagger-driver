@@ -6,7 +6,7 @@ namespace SwaggerDriver
 {
     public class DiscoveryCompleteEventArgs : EventArgs
     {
-        public ProxyReference Reference { get; set; }
+        public DiscoveryResult Reference { get; set; }
     }
 
     public class DiscoveryFailureEventArgs : EventArgs
@@ -18,7 +18,7 @@ namespace SwaggerDriver
     {
         class DiscoveryResult
         {
-            public ProxyReference Reference { get; set; }
+            public SwaggerDriver.DiscoveryResult Reference { get; set; }
             public string FailureReason { get; set; }
         }
 
@@ -67,7 +67,7 @@ namespace SwaggerDriver
             {
                 try
                 {
-                    result.Reference = new ProxyCompiler(CodeProvider.Default)
+                    result.Reference = new DiscoveryCompiler(CodeProvider.Default)
                         .CompileDiscovery(discovery, "temp");
                 }
                 catch (InvalidOperationException ioe)
