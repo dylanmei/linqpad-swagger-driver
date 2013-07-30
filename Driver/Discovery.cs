@@ -8,12 +8,11 @@ namespace SwaggerDriver
 {
     public class Discovery
     {
-        ServiceDocumentation documentation;
-        IEnumerable<ApiDocumentation> apiDocumentation;
-        IEnumerable<DiscoveryResource> resources;
-        readonly IDocumentationClient client;
+        ServiceDocument serviceDocument;
+        IEnumerable<ApiDocument> apiDocuments;
+        readonly ISwaggerClient client;
 
-        public Discovery(IDocumentationClient client)
+        public Discovery(ISwaggerClient client)
         {
             this.client = client;
         }
@@ -27,28 +26,28 @@ namespace SwaggerDriver
         {
             get
             {
-                var service = GetServiceDocumentation();
-                return GetResources(service.BasePath, GetApiDocumentation());
+                var service = GetServiceDocument();
+                return GetResources(service.BasePath, GetApiDocument());
             }
         }
 
-        ServiceDocumentation GetServiceDocumentation()
+        ServiceDocument GetServiceDocument()
         {
-            return documentation ?? (documentation = client.Service());
+            return serviceDocument ?? (serviceDocument = client.Service());
         }
 
-        IEnumerable<ApiDocumentation> GetApiDocumentation()
+        IEnumerable<ApiDocument> GetApiDocument()
         {
-            if (apiDocumentation == null)
+            if (apiDocuments == null)
             {
-                var serviceDocumentation = GetServiceDocumentation();
-                apiDocumentation = client.Apis(serviceDocumentation.BasePath, serviceDocumentation.Apis);
+                var serviceDocumentation = GetServiceDocument();
+                apiDocuments = client.Apis(serviceDocumentation.BasePath, serviceDocumentation.Apis);
             }
 
-            return apiDocumentation;
+            return apiDocuments;
         }
 
-        static IEnumerable<DiscoveryResource> GetResources(string basePath, IEnumerable<ApiDocumentation> docs)
+        static IEnumerable<DiscoveryResource> GetResources(string basePath, IEnumerable<ApiDocument> docs)
         {
             var apisByName = GetApisByName(docs);
             return apisByName.Select(apiGroup => new DiscoveryResource {
@@ -56,7 +55,7 @@ namespace SwaggerDriver
             });
         }
 
-        static IEnumerable<IGrouping<string, Api>> GetApisByName(IEnumerable<ApiDocumentation> docs)
+        static IEnumerable<IGrouping<string, Api>> GetApisByName(IEnumerable<ApiDocument> docs)
         {
             var apis = docs.SelectMany(doc => doc.Apis);
             return apis.GroupBy(GetResourceName);

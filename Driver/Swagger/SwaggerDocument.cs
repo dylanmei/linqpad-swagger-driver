@@ -3,7 +3,7 @@
 namespace SwaggerDriver.Swagger
 {
     [DataContract]
-    public abstract class Documentation
+    public abstract class SwaggerDocument
     {
         [DataMember(Name = "apiVersion")]
         public string ApiVersion { get; set; }

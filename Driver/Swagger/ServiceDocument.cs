@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace SwaggerDriver.Swagger
 {
     [DataContract]
-    public class ServiceDocumentation : Documentation
+    public class ServiceDocument : SwaggerDocument
     {
         [DataMember(Name = "apis")]
         public List<ApiReference> Apis { get; set; }

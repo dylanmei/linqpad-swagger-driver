@@ -6,7 +6,7 @@ using SwaggerDriver.Swagger;
 
 namespace SwaggerDriver
 {
-    class DiscoveryClient : IDocumentationClient
+    class DiscoveryClient : ISwaggerClient
     {
         readonly string url;
         readonly ICredentials credentials;
@@ -17,33 +17,33 @@ namespace SwaggerDriver
             this.credentials = credentials ?? CredentialCache.DefaultCredentials;
         }
 
-        public ServiceDocumentation Service()
+        public ServiceDocument Service()
         {
             var client = new HttpClient();
             var response = client.GetAsync(url).Result;
             response.EnsureSuccessStatusCode();
 
-            var declaration = JsonConvert.DeserializeObject<ServiceDocumentation>(
+            var declaration = JsonConvert.DeserializeObject<ServiceDocument>(
                 response.Content.ReadAsStringAsync().Result);
 
             return declaration;
         }
 
-        public IEnumerable<ApiDocumentation> Apis(string basePath, IEnumerable<ApiReference> references)
+        public IEnumerable<ApiDocument> Apis(string basePath, IEnumerable<ApiReference> references)
         {
-            var results = new List<ApiDocumentation>();
+            var results = new List<ApiDocument>();
             foreach (var resourceReference in references)
                 results.Add(FetchResource(basePath ?? url, resourceReference));
             return results;
         }
 
-        ApiDocumentation FetchResource(string apiPath, ApiReference reference)
+        ApiDocument FetchResource(string apiPath, ApiReference reference)
         {
             var client = new HttpClient();
             var response = client.GetAsync(apiPath + reference.DocPath).Result;
             response.EnsureSuccessStatusCode();
 
-            var declaration = JsonConvert.DeserializeObject<ApiDocumentation>(
+            var declaration = JsonConvert.DeserializeObject<ApiDocument>(
                 response.Content.ReadAsStringAsync().Result);
 
             return declaration;

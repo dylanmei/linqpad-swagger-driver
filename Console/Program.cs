@@ -15,7 +15,6 @@ namespace Console
         static void Main(string[] args)
         {
             discovery = new Discovery(
-//                "http://entsvcc.candidate-gettyimages.com/Purchase/swagger/api-docs", CredentialCache.DefaultCredentials);
                 "http://petstore.swagger.wordnik.com/api/api-docs", CredentialCache.DefaultCredentials);
 
             var assemblyPath = Path.Combine(GetOutputPath(), "output.dll");
