@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using LINQPad.Extensibility.DataContext;
-using SwaggerDriver.Swagger;
 
 namespace SwaggerDriver
 {
@@ -20,14 +19,28 @@ namespace SwaggerDriver
             this.typeName = typeName;
         }
 
-        public Explorer Build(ApiDeclaration api)
+        public Explorer Build(IEnumerable<DiscoveryResource> resources)
         {
             return new Explorer {
                 TypeName = typeName,
-                Resources = api.Resources
-                    .Select(r => new ExplorerItem(r.Path, ExplorerItemKind.QueryableObject, ExplorerIcon.View) {
-                            DragText = r.Path.Replace("/", "_").Replace("-", "_") + ".Get()"})
+                Resources = resources.Select(BuildResource)
             };
+        }
+
+        public ExplorerItem BuildResource(DiscoveryResource resource)
+        {
+            var resourceItem = new ExplorerItem(resource.Name, ExplorerItemKind.Category, ExplorerIcon.View) {
+                Children = new List<ExplorerItem>()
+            };
+            foreach (var api in resource.Apis)
+            {
+                resourceItem.Children.Add(new ExplorerItem(api.Path, ExplorerItemKind.QueryableObject, ExplorerIcon.StoredProc)
+                {
+                    DragText = resource.Name + ".GET(\"" + api.Path + "\")"
+                });
+            }
+
+            return resourceItem;
         }
     }
 }

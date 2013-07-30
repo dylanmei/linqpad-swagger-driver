@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace SwaggerDriver.Swagger
 {
     [DataContract]
-    public class Resource
+    public class Api
     {
         [DataMember(Name = "path")]
         public string Path { get; set; }

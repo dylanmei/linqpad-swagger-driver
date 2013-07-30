@@ -1,6 +1,8 @@
-﻿using System.CodeDom;
+﻿using System;
+using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using SwaggerDriver.Swagger;
 
@@ -10,14 +12,18 @@ namespace SwaggerDriver
     {
         readonly CodeDomProvider codeProvider;
         readonly CodeNamespace codeNamespace;
-        CodeTypeDeclaration apiType;
+
+        public CodeTypeDeclaration ApiType { get; private set; }
+        public IEnumerable<CodeTypeDeclaration> ResourceTypes { get; private set; }
 
         public readonly CodeCompileUnit TargetCompileUnit = new CodeCompileUnit();
+        static readonly string[] SupportedMethods = "GET".Split();
 
         public CodeBuilder(CodeDomProvider codeProvider, string codeNamespace)
         {
             this.codeProvider = codeProvider;
             this.codeNamespace = new CodeNamespace(codeNamespace);
+            InitializeTypes();
             TargetCompileUnit.Namespaces.Add(this.codeNamespace);
         }
 
@@ -26,42 +32,55 @@ namespace SwaggerDriver
             get { return codeProvider; }
         }
 
-        CodeTypeDeclaration ApiType
+        void InitializeTypes()
         {
-            get
+            ResourceTypes = new List<CodeTypeDeclaration>();
+            ApiType = new CodeTypeDeclaration
             {
-                if (apiType == null)
-                {
-                    apiType = new CodeTypeDeclaration {
-                        IsClass = true,
-                        TypeAttributes = TypeAttributes.Public,
-                        Name = "Api"
-                    };
-                    codeNamespace.Types.Add(apiType);
-                }
-                return apiType;
+                IsClass = true,
+                TypeAttributes = TypeAttributes.Public,
+                Name = "Api"
+            };
+            codeNamespace.Types.Add(ApiType);
+        }
+
+        public void Build(IEnumerable<DiscoveryResource> resources)
+        {
+            foreach (var resource in resources)
+            {
+                BuildResourceType(resource.Name,
+                    resource.BasePath, resource.Apis);
             }
         }
 
-        public void BuildResources(string basePath, IEnumerable<Resource> apis)
+        void BuildResourceType(string resourceName, string basePath, IEnumerable<Api> apis)
         {
-            var type = new CodeTypeDeclaration {
-                IsClass = true,
-                TypeAttributes = TypeAttributes.NestedPublic,
-                Name = basePath.Replace("/", "_").Replace("-", "_"),
-            };
+            var resourceType = ResourceTypes.SingleOrDefault(t => t.Name == resourceName);
+            if (resourceType == null)
+            {
+                resourceType = new CodeTypeDeclaration {
+                    Name = resourceName,
+                    IsClass = true,
+                    TypeAttributes = TypeAttributes.NestedPublic,
+                };
 
-            var method = new CodeMemberMethod {
-                Name = "Get",
-                Attributes = MemberAttributes.Public | MemberAttributes.Static,
-                ReturnType = new CodeTypeReference(typeof(string))
-            };
+                foreach (var methodName in SupportedMethods)
+                {
+                    var requestMethod = new CodeMemberMethod
+                    {
+                        Name = methodName,
+                        Attributes = MemberAttributes.Public | MemberAttributes.Static,
+                        ReturnType = new CodeTypeReference(typeof(string))
+                    };
+                    requestMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "path"));
+                    var code = string.Format("return \"{0} {1}/\" + path;", methodName, basePath);
+                    requestMethod.Statements.Add(new CodeSnippetStatement(code));
+                    resourceType.Members.Add(requestMethod);
+                }
 
-            var code = string.Format("return \"Hello {0}\";", basePath);
-            method.Statements.Add(new CodeSnippetStatement(code));
-
-            type.Members.Add(method);
-            ApiType.Members.Add(type);
+                ApiType.Members.Add(resourceType);
+                ((List<CodeTypeDeclaration>)ResourceTypes).Add(resourceType);
+            }
         }
     }
 }

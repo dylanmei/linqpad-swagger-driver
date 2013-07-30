@@ -61,13 +61,11 @@ namespace SwaggerDriver
             var model = new ConnectionModel(connectionInfo);
             var discovery = new Discovery(model.Uri, null);
             
-            // swagger service description
-            var service = discovery.GetApi();
-
             new DiscoveryCompiler(CodeProvider.Default)
                 .CompileDiscovery(discovery, assemblyToBuild, @namespace);
 
-            var explorer = new ExplorerBuilder("Api").Build(service);
+            var explorer = new ExplorerBuilder("Api")
+                .Build(discovery.Resources);
 
             typeName = explorer.TypeName;
             return explorer.Resources.ToList();

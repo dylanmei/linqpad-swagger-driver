@@ -1,66 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
-using System.Net.Http;
-using Newtonsoft.Json;
 using SwaggerDriver.Swagger;
 
 namespace SwaggerDriver
 {
     public class Discovery
     {
-        readonly string url;
-        readonly ICredentials credentials;
-        ApiDeclaration apiDeclaration;
-        IEnumerable<ResourceDeclaration> resourceDeclarations;
+        ServiceDocumentation documentation;
+        IEnumerable<ApiDocumentation> apiDocumentation;
+        IEnumerable<DiscoveryResource> resources;
+        readonly IDocumentationClient client;
+
+        public Discovery(IDocumentationClient client)
+        {
+            this.client = client;
+        }
 
         public Discovery(string url, ICredentials credentials)
+            : this(new DiscoveryClient(url, credentials)) 
         {
-            this.url = url;
-            this.credentials = credentials ?? CredentialCache.DefaultCredentials;
         }
 
-        public ApiDeclaration GetApi()
+        public IEnumerable<DiscoveryResource> Resources
         {
-            return apiDeclaration ?? (apiDeclaration = FetchApi());
+            get
+            {
+                var service = GetServiceDocumentation();
+                return GetResources(service.BasePath, GetApiDocumentation());
+            }
         }
 
-        public IEnumerable<ResourceDeclaration> GetResources()
+        ServiceDocumentation GetServiceDocumentation()
         {
-            return resourceDeclarations ?? (resourceDeclarations = FetchResources());
+            return documentation ?? (documentation = client.Service());
         }
 
-        ApiDeclaration FetchApi()
+        IEnumerable<ApiDocumentation> GetApiDocumentation()
         {
-            var client = new HttpClient();
-            var response = client.GetAsync(url).Result;
-            response.EnsureSuccessStatusCode();
+            if (apiDocumentation == null)
+            {
+                var serviceDocumentation = GetServiceDocumentation();
+                apiDocumentation = client.Apis(serviceDocumentation.BasePath, serviceDocumentation.Apis);
+            }
 
-            var declaration = JsonConvert.DeserializeObject<ApiDeclaration>(
-                response.Content.ReadAsStringAsync().Result);
-
-            return declaration;
+            return apiDocumentation;
         }
 
-        IEnumerable<ResourceDeclaration> FetchResources()
+        static IEnumerable<DiscoveryResource> GetResources(string basePath, IEnumerable<ApiDocumentation> docs)
         {
-            var results = new List<ResourceDeclaration>();
-            var api = GetApi();
-            foreach (var resourceReference in api.Resources)
-                results.Add(FetchResource(api.BasePath ?? url, resourceReference));
-            return results;
+            var apisByName = GetApisByName(docs);
+            return apisByName.Select(apiGroup => new DiscoveryResource {
+                Name = apiGroup.Key, Apis = apiGroup.ToArray(), BasePath = basePath
+            });
         }
 
-        ResourceDeclaration FetchResource(string apiPath, ResourceReference reference)
+        static IEnumerable<IGrouping<string, Api>> GetApisByName(IEnumerable<ApiDocumentation> docs)
         {
-            var client = new HttpClient();
-            var response = client.GetAsync(apiPath + reference.Path).Result;
-            response.EnsureSuccessStatusCode();
+            var apis = docs.SelectMany(doc => doc.Apis);
+            return apis.GroupBy(GetResourceName);
+        }
 
-            var declaration = JsonConvert.DeserializeObject<ResourceDeclaration>(
-                response.Content.ReadAsStringAsync().Result);
-
-            return declaration;
+        static string GetResourceName(Api api)
+        {
+            var pathSegment = api.Path;
+            if (pathSegment.StartsWith("/"))
+                pathSegment = pathSegment.Substring(1);
+            if (pathSegment.Contains("/"))
+                pathSegment = pathSegment.Substring(0, pathSegment.IndexOf("/", StringComparison.Ordinal));
+            return pathSegment;
         }
     }
 }

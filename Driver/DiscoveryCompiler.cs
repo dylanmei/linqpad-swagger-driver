@@ -24,8 +24,7 @@ namespace SwaggerDriver
         public DiscoveryResult CompileDiscovery(Discovery discovery, AssemblyName assemblyName, string @namespace)
         {
             var builder = new CodeBuilder(CodeProvider.Default, @namespace);
-            foreach (var api in discovery.GetResources())
-                builder.BuildResources(api.Path, api.Resources);
+            builder.Build(discovery.Resources);
 
             var reference = new DiscoveryResult {
                 CodeDom = builder.TargetCompileUnit,
